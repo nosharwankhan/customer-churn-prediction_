@@ -42,11 +42,6 @@ patterns and relationships between customer features and churn.
 3. Tenure and total charges are naturally related.
 4. Payment method and internet service type both show clear churn patterns.
 
-## Questions for Next Week
-1. Which combination of contract type, tenure, and charges gives the highest churn probability?
-2. Do Online Security and Tech Support significantly reduce churn?
-3. Can a machine learning model accurately predict which customers will churn?
-
 ### Setup
 Open the Kaggle notebook or run locally:
 ```
