@@ -86,3 +86,47 @@ pip install pandas numpy matplotlib seaborn
   <img src="figures/business_cost_curve.png" width="48%" alt="Business Cost vs Threshold" />
   <img src="figures/tree_overfitting.png" width="48%" alt="Decision Tree Overfitting" />
 </p>
+
+## Week 3: Model Optimization and Unsupervised Learning
+
+- Split-to-split accuracy range across 20 seeds: 78.0% to 82.8% (std: 0.0104, theoretical 95% CI: +/- 0.0209)
+- 5-fold CV AUC: LR [0.846 +/- 0.013], RF [0.844 +/- 0.011], XGBoost [0.850 +/- 0.012]
+- Tuning: best RF params {'max_depth': 8, 'max_features': 'sqrt', 'min_samples_leaf': 20}; grid vs random search time [104.6s vs 104.4s for 120 fits each]
+- Test AUC of final model (used once): 0.8483
+- Customer segments (k = 4): [At-Risk High-Spenders, 43.1%], [Early-Stage Basic Explorers, 32.2%], [Premium Enterprise Loyalists, 14.3%], [Budget-Conscious Savers, 5.2%]
+- PCA: 15 of 30 components explain 90% of the variance
+- Biggest lesson: A single train/test split accuracy varies by 4.8% purely due to random partition noise, meaning model comparisons without cross-validation and standard deviations are statistical illusions.
+
+### 5-Fold Cross-Validation Model Benchmark
+
+| Model Architecture | 5-Fold CV ROC-AUC | Recall (t=0.5) | F1-Score | Status / Notes |
+| :--- | :---: | :---: | :---: | :--- |
+| **Logistic Regression (tuned C=10.0)** | 0.8464 +/- 0.0129 | 0.545 +/- 0.042 | 0.594 +/- 0.030 | Fast, interpretable, stable across folds |
+| **Random Forest (Random Search)** | 0.8464 +/- 0.0114 | 0.496 +/- 0.019 | 0.573 +/- 0.020 | High complexity, lower recall at default threshold |
+| **XGBoost (Tuned with Early Stopping)** | **0.8502 +/- 0.0117** | **0.521** (test) | **0.659** (prec) | **Winner by CV:** Evaluated on test set once (AUC: **0.8483**) |
+
+### Actionable Customer Segments (K-Means, k=4)
+
+| Segment Name | Cluster | Size | Avg Tenure | Monthly Charge | Avg Services | Churn Rate | Concrete Retention Action |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **At-Risk High-Spenders** | 1 | 2,157 (30.6%) | 18.4 mo | 80.41 USD | 3.28 | **43.1%** | Contract lock-in discount (15% off for 12 mo) + technical onboarding check. |
+| **Early-Stage Basic Explorers** | 3 | 1,918 (27.2%) | 9.0 mo | 37.71 USD | 1.20 | **32.2%** | Nurture sequence with 3-month free security/tech support add-on trial. |
+| **Premium Enterprise Loyalists** | 2 | 1,938 (27.5%) | 59.8 mo | 92.09 USD | 5.06 | **14.3%** | VIP support tier, router hardware upgrades, family referral bonuses. |
+| **Budget-Conscious Savers** | 0 | 1,030 (14.6%) | 53.6 mo | 30.96 USD | 1.48 | **5.2%** | Low touch; maintain grandfathered pricing and send loyalty thank-you perks. |
+
+### Week 3 Diagnostics & Visualizations
+
+<p align="center">
+  <img src="figures/week3_split_noise.png" width="48%" alt="Split Noise across 20 Seeds" />
+  <img src="figures/week3_validation_curve.png" width="48%" alt="Validation Curve" />
+</p>
+
+<p align="center">
+  <img src="figures/week3_xgboost_early_stopping.png" width="48%" alt="XGBoost Early Stopping" />
+  <img src="figures/week3_kmeans_elbow_silhouette.png" width="48%" alt="K-Means Elbow and Silhouette" />
+</p>
+
+<p align="center">
+  <img src="figures/week3_pca_scree.png" width="48%" alt="PCA Scree Plot" />
+  <img src="figures/week3_pca_2d_scatter.png" width="48%" alt="PCA 2D Customer Projection" />
+</p>
